@@ -131,7 +131,10 @@ func getVaultLogs(t *testing.T, testId string, terraformOptions *terraform.Optio
 		sysLogPath = vaultSyslogPathAmazonLinux
 	}
 
-	instanceIdToFilePathToContents := aws.FetchContentsOfFilesFromAsg(t, awsRegion, sshUserName, keyPair, asgName, true, vaultStdOutLogFilePath, vaultStdErrLogFilePath, sysLogPath)
+	instanceIdToFilePathToContents, err := aws.FetchContentsOfFilesFromAsgE(t, awsRegion, sshUserName, keyPair, asgName, true, vaultStdOutLogFilePath, vaultStdErrLogFilePath, sysLogPath)
+	if err != nil {
+		logger.Logf(t, "Error fetching log files from ASG: %v", err)
+	}
 
 	require.Len(t, instanceIdToFilePathToContents, vaultClusterSizeInExamples)
 
